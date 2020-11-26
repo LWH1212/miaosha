@@ -61,7 +61,8 @@
                 <input type="hidden" name="amount" th:value="${orderInfo.goodsPrice}" id="amount"/>
                 <input type="hidden" name="name" th:value="${orderInfo.goodsName}" id="name"/>
                 <input type="hidden" name="desc" th:value="${orderInfo.goodsDetail}" id="desc"/>
-                <button class="btn btn-primary btn-block" type="button" id="payButton"  onclick="pay()">立即支付</button>
+                <button class="btn btn-primary btn-block" type="button"  onclick="pay()" th:if="${orderInfo.status} eq 0">立即支付</button>
+                <button class="btn btn-primary btn-block" type="button"  onclick="repay()" th:if="${orderInfo.status} eq 1">立即支付</button>
             </form>
 
         </div>
@@ -79,6 +80,11 @@
             function () {
                 layer.closeAll();
             });
+    }
+
+    function repay() {
+        g_showLoading();
+        layer.msg('请勿重新支付');
     }
 </script>
 </html>
