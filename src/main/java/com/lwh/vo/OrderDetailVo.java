@@ -5,9 +5,11 @@ import com.lwh.pojo.OrderInfo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
-public class OrderDetailVo {
+public class OrderDetailVo implements Serializable {
 
     private GoodsBo goods;
 

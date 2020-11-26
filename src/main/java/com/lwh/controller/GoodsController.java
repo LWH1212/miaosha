@@ -46,19 +46,26 @@ public class GoodsController {
     @RequestMapping("/list")
     @ResponseBody
     public String list(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session){
-        String html = redisService.get(GoodsKey.getGoodsList,"",String.class);
-        if (!StringUtils.isEmpty(html)){
-            return html;
+//        String html = redisService.get(GoodsKey.getGoodsList,"",String.class);
+//        if (!StringUtils.isEmpty(html)){
+//            return html;
+//        }
+
+        List<GoodsBo> goodsBos = (List<GoodsBo>) redisService.getList("goodsList");
+        model.addAttribute("goodsList",goodsBos);
+        if (goodsBos == null || goodsBos.size() == 0 || goodsBos.isEmpty()){
+            List<GoodsBo> goodsList = seckillGoodsService.getSeckillGoodsList();
+            redisService.setList("goodsList",goodsList,60*30);
+            model.addAttribute("goodsList",goodsList);
         }
-        List<GoodsBo> goodsList = seckillGoodsService.getSeckillGoodsList();
-        model.addAttribute("goodsList",goodsList);
+
         SpringWebContext ctx = new SpringWebContext(request,response,
                 request.getServletContext(),request.getLocale(),model.asMap(),applicationContext);
         //手动渲染
-        html = thymeleafViewResolver.getTemplateEngine().process("goods_list",ctx);
-        if (!StringUtils.isEmpty(html)){
-            redisService.set(GoodsKey.getGoodsList,"",html, Const.RedisCacheExtime.GOODS_LIST);
-        }
+        String html = thymeleafViewResolver.getTemplateEngine().process("goods_list",ctx);
+//        if (!StringUtils.isEmpty(html)){
+////            redisService.set(GoodsKey.getGoodsList,"",html, Const.RedisCacheExtime.GOODS_LIST);
+//        }
         return html;
     }
 

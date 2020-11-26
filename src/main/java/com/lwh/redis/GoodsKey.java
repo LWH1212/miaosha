@@ -10,6 +10,8 @@ public class GoodsKey extends BasePrefix {
 
     public static GoodsKey getGoodsDetail = new GoodsKey("gd");
 
+    public static GoodsKey getGoodsEntity= new GoodsKey("ge");
+
     public static GoodsKey getSeckillGoodsStock = new GoodsKey("gs");
 
 }

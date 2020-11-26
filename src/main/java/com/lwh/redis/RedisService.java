@@ -1,10 +1,13 @@
 package com.lwh.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.lwh.util.SerializeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.List;
 
 @Service
 public class RedisService {
@@ -58,6 +61,36 @@ public class RedisService {
         }finally {
             returnToPool(jedis);
         }
+    }
+
+    //设置List集合
+    public void setList(String key, List<?> list,int exTime){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            if (list == null || list.size() == 0){
+                jedis.set(key.getBytes(),"".getBytes());
+            }else if (exTime == 0){//如果list为空，则设置一个为空
+                jedis.set(key.getBytes(), SerializeUtil.serializeList(list));
+            }else {
+                jedis.setex(key.getBytes(),exTime,SerializeUtil.serializeList(list));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    //获取list集合
+    public List<?> getList(String key){
+        Jedis jedis = jedisPool.getResource();
+        if (jedis == null || !jedis.exists(key)){
+            return null;
+        }
+        byte[] data = jedis.get(key.getBytes());
+        returnToPool(jedis);
+        return SerializeUtil.unserializeList(data);
     }
 
     public Long del(KeyPrefix prefix,String key){
