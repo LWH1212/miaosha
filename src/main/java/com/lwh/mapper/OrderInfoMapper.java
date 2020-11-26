@@ -4,6 +4,8 @@ import com.lwh.pojo.OrderInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface OrderInfoMapper {
@@ -19,4 +21,6 @@ public interface OrderInfoMapper {
     int updateByPrimaryKeySelective(OrderInfo record);
 
     int updateByPrimaryKey(OrderInfo record);
+
+    List<OrderInfo> getOrderList(Long userId);
 }

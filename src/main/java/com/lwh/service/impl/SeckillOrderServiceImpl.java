@@ -57,6 +57,9 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             orderInfo.setOrderChannel(1);
             orderInfo.setStatus(0);
             orderInfo.setUserId((long)user.getId());
+            orderInfo.setGoodsImg(goods.getGoodsImg());
+            orderInfo.setGoodsDetail(goods.getGoodsDetail());
+            orderInfo.setRealPrice(goods.getGoodsPrice());
             //添加信息进行订单
             long orderId = orderService.addOrder(orderInfo);
             log.info("orderId --->"+orderId+"");

@@ -14,17 +14,26 @@
       <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_date" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="pay_date" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="goods_img" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="goods_detail" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="real_price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
     id, user_id, goods_id, addr_id, goods_name, goods_count, goods_price, order_channel, 
-    status, create_date, pay_date
+    status, create_date, pay_date,goods_img,goods_detail,real_price
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from order_info
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getOrderList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from order_info
+    where user_id = #{userId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from order_info
@@ -34,11 +43,12 @@
     insert into order_info (id, user_id, goods_id, 
       addr_id, goods_name, goods_count, 
       goods_price, order_channel, status, 
-      create_date, pay_date)
+      create_date, pay_date, goods_img, goods_detail, real_price)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, 
       #{addrId,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR}, #{goodsCount,jdbcType=INTEGER}, 
       #{goodsPrice,jdbcType=DECIMAL}, #{orderChannel,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP})
+      #{createDate,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP}, #{goodsImg,jdbcType=VARCHAR},
+      #{goodsDetail,jdbcType=LONGVARCHAR}, #{realPrice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.lwh.pojo.OrderInfo" useGeneratedKeys="true" keyProperty="id">
     insert into order_info
@@ -76,6 +86,15 @@
       <if test="payDate != null" >
         pay_date,
       </if>
+      <if test="goodsImg != null" >
+        goods_img,
+      </if>
+      <if test="goodsDetail != null" >
+        goods_detail,
+      </if>
+      <if test="realPrice != null" >
+        real_price,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -110,6 +129,15 @@
       </if>
       <if test="payDate != null" >
         #{payDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodsImg != null" >
+        #{goodsImg,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsDetail != null" >
+        #{goodsDetail,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="realPrice != null" >
+        #{realPrice,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -146,6 +174,15 @@
       <if test="payDate != null" >
         pay_date = #{payDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="goodsImg != null" >
+        goods_img = #{goodsImg,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsDetail != null" >
+        goods_detail = #{goodsDetail,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="realPrice != null" >
+        real_price = #{realPrice,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -160,7 +197,10 @@
       order_channel = #{orderChannel,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      pay_date = #{payDate,jdbcType=TIMESTAMP}
+      pay_date = #{payDate,jdbcType=TIMESTAMP},
+      goods_img = #{goodsImg,jdbcType=VARCHAR},
+      goods_detail = #{goodsDetail,jdbcType=LONGVARCHAR},
+      real_price = #{realPrice,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -3,6 +3,7 @@ package com.lwh.controller;
 import com.lwh.common.Const;
 import com.lwh.param.LoginParam;
 import com.lwh.pojo.User;
+import com.lwh.redis.GoodsKey;
 import com.lwh.redis.RedisService;
 import com.lwh.redis.UserKey;
 import com.lwh.result.Result;
@@ -35,16 +36,19 @@ public class LoginController {
         Result<User> login = userService.login(loginParam);
         if (login.isSuccess()){
             CookieUtil.writeLoginToken(response,session.getId());
+            session.setAttribute("loginUser",login.getData());
             redisService.set(UserKey.getByName,session.getId(),login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return login;
     }
 
     @RequestMapping("/logout")
-    public String doLogout(HttpServletRequest request,HttpServletResponse response){
+    public String doLogout(HttpServletRequest request,HttpServletResponse response,HttpSession session){
         String token = CookieUtil.readLoginToken(request);
+        session.removeAttribute("loginUser");
         CookieUtil.delLoginToken(request,response);
         redisService.del(UserKey.getByName,token);
+        redisService.del(GoodsKey.getGoodsList,"");
         return "login";
     }
 

@@ -1,9 +1,12 @@
 package com.lwh.mapper;
 
+import com.lwh.bo.GoodsBo;
 import com.lwh.pojo.SeckillOrder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Mapper
 @Repository

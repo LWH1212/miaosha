@@ -16,7 +16,6 @@ import com.lwh.result.Result;
 import com.lwh.service.SeckillGoodsService;
 import com.lwh.service.SeckillOrderService;
 import com.lwh.util.CookieUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,6 +62,7 @@ public class SeckillController implements InitializingBean {
         String loginToken = CookieUtil.readLoginToken(request);
         User user = redisService.get(UserKey.getByName,loginToken,User.class);
         model.addAttribute("user",user);
+        System.out.println(user);
         if (user == null){
             return "login";
         }

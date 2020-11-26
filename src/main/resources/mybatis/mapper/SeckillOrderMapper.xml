@@ -13,6 +13,7 @@
   <sql id="Base_Column_List" >
     id, user_id, order_id, goods_id
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -90,4 +91,5 @@
     where user_id = #{userId,jdbcType=BIGINT}
     and goods_id = #{goodsId,jdbcType=BIGINT}
   </select>
+
 </mapper>

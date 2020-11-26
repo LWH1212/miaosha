@@ -14,19 +14,19 @@
 </head>
 <body>
 <div class="seckill_content">
-    <div class="title"><h2>秒杀商品列表</h2><a th:href="@{/user/logout}">退出</a></div>
+    <div class="title"><h2>我的秒杀订单</h2></div>
     <div class="all_seckill_goods">
-                <div class="seckill_goods" th:each="goods,goodsStat : ${goodsList}">
+                <div class="seckill_goods" th:each="goods,goodsStat : ${orderList}">
             <h4 th:text="${goods.goodsName}"></h4>
             <img th:src="@{${goods.goodsImg}}" width="250"/>
             <br/><br/>
             <div class="seckill_price">
-                <p th:text="${goods.goodsTitle}"></p>
+                <p th:text="${goods.goodsDetail}"></p>
                 <p>
-                    <span class="price1" th:text="${goods.seckillPrice}+'元  '"></span>
-                    <del><span class="price2" th:text="${goods.goodsPrice}+'元'"></span></del>
+                    <span class="price1" th:text="${goods.goodsPrice}+'元  '"></span>
+                    <del><span class="price2" th:text="${goods.realPrice}+'元'"></span></del>
                 </p>
-                <a th:href="'/goods/to_detail/'+${goods.id}">
+                <a th:href="@{/orderInfo/orderDetail/}+${goods.id}">
                     <button class="btn btn-default" type="submit">进入详情页...</button>
                 </a>
 

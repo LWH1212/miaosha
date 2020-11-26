@@ -13,6 +13,12 @@
 
 </head>
 <body>
+<div class="seckill_top" th:if="${session.loginUser} != null">
+    <span th:text="${session.loginUser.userName}"></span>|<a th:href="@{/orderInfo/myOrder/}+${session.loginUser.id}">我的秒杀订单</a>|<a th:href="@{/user/logout}">退出</a>
+</div>
+<div class="seckill_top" th:if="${session.loginUser} == null">
+    <span>未登录</span>|<a th:href="@{/page/login}">前去登录</a>
+</div>
 <div class="seckill_content">
     <div class="title"><h2>秒杀商品列表</h2></div>
     <div class="all_seckill_goods">

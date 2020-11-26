@@ -36,4 +36,9 @@ public class OrderInfo {
 
     private Date payDate;
 
+    private String goodsImg;
+
+    private String goodsDetail;
+
+    private BigDecimal realPrice;
 }

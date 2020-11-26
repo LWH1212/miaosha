@@ -22,10 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.spring4.context.SpringWebContext;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -46,7 +45,7 @@ public class GoodsController {
 
     @RequestMapping("/list")
     @ResponseBody
-    public String list(Model model, HttpServletRequest request, HttpServletResponse response){
+    public String list(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session){
         String html = redisService.get(GoodsKey.getGoodsList,"",String.class);
         if (!StringUtils.isEmpty(html)){
             return html;

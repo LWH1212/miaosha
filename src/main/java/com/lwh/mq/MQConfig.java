@@ -11,6 +11,8 @@ public class MQConfig {
 
     public static final String MIAOSHA_QUEUE = "seckill.queue";
 
+    public static final String PAY_QUEUE = "pay_queue";
+
     public static final String QUEUE = "queue";
 
     @Bean
@@ -23,4 +25,13 @@ public class MQConfig {
         return new Queue(QUEUE,true);
     }
 
+    @Bean
+    public Queue miaosha_queue(){
+        return new Queue(MIAOSHA_QUEUE,true);
+    }
+
+    @Bean
+    public Queue pay_queue(){
+        return new Queue(PAY_QUEUE,true);
+    }
 }

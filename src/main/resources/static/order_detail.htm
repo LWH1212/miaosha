@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>订单详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -33,7 +33,7 @@
             <h2 id="goodsName"></h2>
             <p class="title" text="${goods.goodsTitle}"></p>
             <p>
-                <span class="price1"  id="orderPrice"></span>
+                <span  class="price1"  id="orderPrice"></span>
             </p>
             <div class="seckill_data">
                 <div>
@@ -54,7 +54,15 @@
                 <span>北京市昌平区回龙观龙博一区</span>
             </div>
 
+
+            <form th:action="@{/myPay/payOrder/}+${orderInfo.id}" method="get">
+                <input type="hidden" name="tradeNo" th:value="${orderInfo.id}">
+                <input type="hidden" name="amount" th:value="${orderInfo.goodsPrice}">
+                <input type="hidden" name="name" th:value="${orderInfo.goodsName}">
                 <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+            </form>
+
+
         </div>
     </div>
 </div>
@@ -70,7 +78,7 @@
         $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
         var status = "";
         if(order.status == 0){
-            status = "未支付"
+            status = "未支付";
         }else if(order.status == 1){
             status = "待发货";
         }
