@@ -105,6 +105,18 @@ public class RedisService {
         }
     }
 
+    public Long delRedis(String key){
+        Jedis jedis = null;
+        Long result ;
+        try {
+            jedis = jedisPool.getResource();
+            result = jedis.del(key);
+            return result;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
     //判断key是否存在
     public <T> boolean exists(KeyPrefix prefix,String key){
         Jedis jedis = null;

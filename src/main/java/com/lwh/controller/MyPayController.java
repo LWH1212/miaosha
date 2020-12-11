@@ -30,10 +30,6 @@ import java.util.Date;
 @RequestMapping("/myPay")
 public class MyPayController {
 	
-	//private static final Logger LOG = LoggerFactory.getLogger(MyPayController.class);
-    private static Logger log = LoggerFactory.getLogger(MyPayController.class);
-
-
 	@Autowired
     private MQSender mqSender;
 
@@ -90,10 +86,6 @@ public class MyPayController {
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
-
-
-
-
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(form);//直接将完整的表单html输出到页面

@@ -19,4 +19,10 @@ public class PageController {
         return "login";
     }
 
+    @RequestMapping("/login_admin")
+    public String login_adminPage(){
+//        redisService.del(GoodsKey.getGoodsList,"");
+        return "login_admin";
+    }
+
 }

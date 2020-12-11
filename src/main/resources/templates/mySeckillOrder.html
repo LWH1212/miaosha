@@ -18,7 +18,7 @@
     <div class="all_seckill_goods">
                 <div class="seckill_goods" th:each="goods,goodsStat : ${orderList}">
             <h4 th:text="${goods.goodsName}"></h4>
-            <img th:src="@{${goods.goodsImg}}" width="250"/>
+            <img th:src="@{${goods.goodsImg}}" width="250" height="250"/>
             <br/><br/>
             <div class="seckill_price">
                 <p th:text="${goods.goodsDetail}"></p>

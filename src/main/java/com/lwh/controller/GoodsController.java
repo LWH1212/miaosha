@@ -2,14 +2,17 @@ package com.lwh.controller;
 
 import com.lwh.bo.GoodsBo;
 import com.lwh.common.Const;
+import com.lwh.pojo.Goods;
 import com.lwh.pojo.User;
 import com.lwh.redis.GoodsKey;
 import com.lwh.redis.RedisService;
 import com.lwh.redis.UserKey;
 import com.lwh.result.CodeMsg;
 import com.lwh.result.Result;
+import com.lwh.service.GoodsService;
 import com.lwh.service.SeckillGoodsService;
 import com.lwh.util.CookieUtil;
+import com.lwh.util.UploadImageUtil;
 import com.lwh.vo.GoodsDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +21,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.spring4.context.SpringWebContext;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -38,10 +44,25 @@ public class GoodsController {
     SeckillGoodsService seckillGoodsService;
 
     @Autowired
+    GoodsService goodsService;
+
+    @Autowired
     ThymeleafViewResolver thymeleafViewResolver;
 
     @Autowired
     ApplicationContext applicationContext;
+
+    @RequestMapping("/goodsList")
+    public String goodsList(Model model){
+        List<Goods> goodsAll = (List<Goods>) redisService.getList("goodsAll");
+        model.addAttribute("goodsAll",goodsAll);
+        if (goodsAll == null || goodsAll.size() == 0 || goodsAll.isEmpty()){
+            List<Goods> goods = goodsService.findAll();
+            redisService.setList("goodsAll",goods,60*30);
+            model.addAttribute("goodsAll",goods);
+        }
+        return "goods";
+    }
 
     @RequestMapping("/list")
     @ResponseBody
@@ -150,5 +171,47 @@ public class GoodsController {
             return Result.success(vo);
         }
     }
+
+    @RequestMapping("/addGoods")
+    public String addGoods(@RequestParam("fileName")MultipartFile file, Goods goods,HttpServletRequest request){
+        UploadImageUtil uploadImageUtil = new UploadImageUtil();
+        uploadImageUtil.uploadOneImage(goods,request,file,"D:/lwh/Seckill-master/miaosha/src/main/resources/static/img");
+        String fileName = uploadImageUtil.getFileName();
+        goods.setGoodsImg("/img/"+fileName);
+        goods.setCreateDate(new Date());
+        goods.setUpdateDate(new Date());
+        goods.setAddStatus(0);
+        String goodsDetail = request.getParameter("goodsTitle");
+        goods.setGoodsDetail(goodsDetail);
+        goodsService.insert(goods);
+        redisService.delRedis("goodsAll");
+        return "redirect:/goods/goodsList";
+    }
+
+    @RequestMapping("/goodsDetail/{id}")
+    public String goods_detail(@PathVariable("id") long goodsId,Model model){
+        Goods goods = goodsService.selectByPrimaryKey(goodsId);
+        model.addAttribute("goods",goods);
+        return "goods_detail";
+    }
+
+    @RequestMapping("batchDelete")
+    @ResponseBody
+    public void batchDelete(String[] ids){
+        goodsService.batchDelete(ids);
+        redisService.delRedis("goodsAll");
+    }
+
+    @RequestMapping("selectByIds")
+//    @ResponseBody
+    public String selectByIds(String[] ids,Model model){
+       List<Goods> goodsByIds =  goodsService.selectByIds(ids);
+       model.addAttribute("goodsByIds",goodsByIds);
+        return "addmore";
+
+//        redisService.delRedis("goodsAll");
+    }
+
+
 
 }

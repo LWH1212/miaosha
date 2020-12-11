@@ -27,4 +27,9 @@ public class MD5Util {
         return dbPass;
     }
 
+    public static void main(String[] args) {
+        String input = MD5Util.inputPassToDBPass("admin",salt);
+        System.out.println(input);
+    }
+
 }

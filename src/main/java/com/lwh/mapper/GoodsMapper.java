@@ -3,6 +3,7 @@ package com.lwh.mapper;
 import com.lwh.bo.GoodsBo;
 import com.lwh.pojo.Goods;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,12 @@ public interface GoodsMapper {
     GoodsBo getseckillGoodsBoByGoodsId(long goodsId);
 
     int updateStock(long goodsId);
+
+    List<Goods> findAll();
+
+    int updateAddStatus(long id);
+
+    int batchDelete(String[] ids);
+    
+    List<Goods> selectByIds(String[] ids);
 }

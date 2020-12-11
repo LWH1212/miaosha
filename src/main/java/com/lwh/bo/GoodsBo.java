@@ -40,4 +40,5 @@ public class GoodsBo implements Serializable {
     private Date updateDate;
 
     private String goodsDetail;
+
 }

@@ -1,0 +1,25 @@
+.preimg{
+    width:240px;
+    height:135px;
+    display: inline-block;
+    background-color: #f3f5f4;
+    line-height: 135px;
+    vertical-align: top;
+    margin-top:13px;
+    margin-left:8px;
+    cursor:pointer;
+    background-size: 240px 135px;
+}
+
+.preimg1{
+    width:240px;
+    height:135px;
+    display: inline-block;
+    background-color: #f3f5f4;
+    line-height: 135px;
+    vertical-align: top;
+    margin-top:13px;
+    margin-left:8px;
+    cursor:pointer;
+    background-size: 240px 135px;
+}

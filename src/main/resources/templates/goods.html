@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>全部商品列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/goods.css}"/>
+    <style>
+        .preimg{
+            width:240px;
+            height:135px;
+            display: inline-block;
+            background-color: #f3f5f4;
+            line-height: 135px;
+            vertical-align: top;
+            margin-top:13px;
+            margin-left:8px;
+            cursor:pointer;
+            background-size: 240px 135px;
+        }
+    </style>
+</head>
+<body>
+<div class="seckill_top" th:if="${session.loginUser} != null">
+    <span class="btn btn-info" th:text="${session.loginUser.userName}"></span>|
+    <button type="button" class="btn btn-info" onclick="batchDelete()">批量删除</button>|
+    <a class="btn btn-info" href="#" data-toggle="modal" data-target="#myModal">添加商品</a>|
+    <a class="btn btn-info" href="#" onclick="selectByIds()" >批量录入商品</a>|
+    <a class="btn btn-info" onclick="logout()">退出</a>
+</div>
+<div class="seckill_content">
+    <div class="title"><h2>全部商品列表</h2></div>
+    <div class="all_seckill_goods">
+        <div class="seckill_goods" th:each="goods,goodsStat : ${goodsAll}">
+            <input type="hidden" class="addStatus" name="addStatus" th:value="${goods.addStatus}"/>
+            <input type="checkbox" name="check" th:value="${goods.id}"/>
+            <h4 th:text="${goods.goodsName}"></h4>
+            <img th:src="@{${goods.goodsImg}}" width="250" height="250"/>
+            <br/><br/>
+            <div class="seckill_price">
+                <p class="detail" th:text="${goods.goodsTitle}"></p>
+                <p>
+                    <span class="price1" th:text="${goods.goodsPrice}+'元  '"></span>
+                </p>
+                <a th:href="@{/goods/goodsDetail/}+${goods.id}">
+                    <button class="btn btn-default" type="submit">进入详情页...</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form action="/goods/addGoods" method="post" enctype="multipart/form-data" onsubmit="return checkAdd(this)" class="form-horizontal" role="form" id="myForm" >
+        <div class="modal fade" id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <!--  定义模态框，过渡效果为淡入，id为myModal,tabindex=-1可以禁用使用tab切换，aria-labelledby用于引用模态框的标题，aria-hidden=true保持模态框在触发前窗口不可见  -->
+            <div class="modal-dialog">
+                <!--  显示模态框对话框模型（若不写下一个div则没有颜色）  -->
+                <div class="modal-content">
+                    <!--  显示模态框白色背景，所有内容都写在这个div里面  -->
+
+                    <div class="btn-info modal-header">
+                        <!--  模态框标题  -->
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <!--  关闭按钮  -->
+                        <h4>录入商品</h4>
+                        <!--  标题内容  -->
+                    </div>
+
+                    <div class="modal-body">
+                        <!--  模态框内容，我在此处添加一个表单 -->
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="imgUrl" class="col-sm-2 control-label">图片</label>
+                                <div class="col-sm-9">
+                                    <div>
+                                        <div class="preimg" onclick="uploadImg()"></div>
+                                        <input id="imgUrl" type="file" name="fileName" style="display: none" class="imgBtn" accept="image/*" onchange="loadBtn(this)" />
+                                    </div><br/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodsName" class="col-sm-2 control-label">商品名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" required="required" id="goodsName" name="goodsName" class="form-control well" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodsTitle" class="col-sm-2 control-label">商品描述</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="goodsTitle" name="goodsTitle" class="form-control well" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodsPrice" class="col-sm-2 control-label">商品价格</label>
+                                <div class="col-sm-9">
+                                    <input type="number" id="goodsPrice" name="goodsPrice" class="form-control well" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodsStock" class="col-sm-2 control-label">商品库存</label>
+                                <div class="col-sm-9">
+                                    <input type="number" id="goodsStock" name="goodsStock" class="form-control well" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <!--  模态框底部样式，一般是提交或者确定按钮 -->
+                        <button type="submit" class="btn btn-info">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div>
+        </div> <!-- /.modal -->
+    </form>
+</div>
+</body>
+<!-- jquery-validator -->
+<script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+<!-- layer -->
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<!-- md5.js -->
+<script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+<!-- common.js -->
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script>
+    var img = document.getElementsByClassName('preimg')[0];
+    var imgBtn = document.getElementsByClassName('imgBtn')[0];
+    function uploadImg(){
+        imgBtn.click();
+    }
+    function loadBtn(e){
+        const fileObj = e.files[0];
+        const windowURL = window.URL || window.webkitURL;
+        /*<![CDATA[*/
+        if(imgBtn && fileObj){
+            const imgURL = windowURL.createObjectURL(fileObj);
+            img.style.backgroundImage = "url("+imgURL+")";
+        }
+        /*]]>*/
+    }
+
+    function checkAdd(obj) {
+        if (obj.fileName.value == ""){
+            layer.msg("请选择图片");
+            return false;
+        }
+        layer.msg("添加成功");
+        return true;
+    }
+
+    function batchDelete() {
+        //定义一个空数组存储
+        var arr = [];
+        //根据name的值获取到所有选中checkbox，并遍历
+        $("input:checkbox[name='check']:checked").each(function (i) {
+            arr[i] = $(this).val();
+        });
+        if (arr.length == 0){
+            layer.msg("请选择要删除的商品");
+            return false;
+        }
+        layer.confirm("确定要删除已选中的商品吗？", {btn: ["确定", "取消"]},
+            function (){
+                var arrToStr = arr.toString();
+                $.ajax({
+                    url: '/goods/batchDelete',
+                    type: 'post',
+                    data: {
+                        ids: arrToStr
+                    },
+                    success: function() {
+                        location.href="/goods/goodsList";
+                    },
+                    error: function (){
+                       layer.msg("服务端异常");
+                    }
+                })
+            },
+            function (){
+                layer.closeAll();
+            })
+    }
+
+    function logout() {
+        layer.confirm("确定退出吗？", {btn: ["确定", "取消"]},
+            function (){
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function() {
+                        location.href="/page/login_admin";
+                    },
+                    error: function (){
+                        layer.msg("服务端异常");
+                    }
+                })
+            },
+            function (){
+                layer.closeAll();
+            })
+    }
+
+    function selectByIds() {
+        //定义一个空数组存储
+        var arr = [];
+        var status = [];
+        //根据name的值获取到所有选中checkbox，并遍历
+        $("input:checkbox[name='check']:checked").each(function (i) {
+            arr[i] = $(this).val();
+        });
+        if (arr.length == 0){
+            layer.msg("请选择需要添加的商品");
+            return false;
+        }
+        layer.confirm("确定要添加已选中的商品吗？", {btn: ["确定", "取消"]},
+            function (){
+                var arrToStr = arr.toString();
+                $.ajax({
+                    url: '/goods/selectByIds',
+                    type: 'post',
+                    data: {
+                        ids: arrToStr
+                    },
+                    success: function() {
+                        location.href = "/goods/selectByIds?ids="+arrToStr
+                    },
+                    error: function (){
+                        layer.msg("服务端异常");
+                    }
+                })
+            },
+            function (){
+                layer.closeAll();
+            })
+    }
+
+</script>
+</html>

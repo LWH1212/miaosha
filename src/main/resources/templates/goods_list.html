@@ -24,7 +24,7 @@
     <div class="all_seckill_goods">
                 <div class="seckill_goods" th:each="goods,goodsStat : ${goodsList}">
             <h4 th:text="${goods.goodsName}"></h4>
-            <img th:src="@{${goods.goodsImg}}" width="250"/>
+            <img th:src="@{${goods.goodsImg}}" width="250" height="250"/>
             <br/><br/>
             <div class="seckill_price">
                 <p th:text="${goods.goodsTitle}"></p>
@@ -35,7 +35,6 @@
                 <a th:href="'/goods_detail.htm?goodsId='+${goods.id}">
                     <button class="btn btn-default" type="submit">进入详情页...</button>
                 </a>
-
             </div>
         </div>
     </div>

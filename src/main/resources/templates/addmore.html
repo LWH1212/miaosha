@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/goods.css}"/>
+</head>
+<body>
+<form  method="post"  class="form-horizontal" id="myForm" >
+    <div  id="batchAddModal" >
+        <!--  定义模态框，过渡效果为淡入，id为myModal,tabindex=-1可以禁用使用tab切换，aria-labelledby用于引用模态框的标题，aria-hidden=true保持模态框在触发前窗口不可见  -->
+        <div class="modal-dialog">
+            <!--  显示模态框对话框模型（若不写下一个div则没有颜色）  -->
+            <div class="modal-content">
+                <!--  显示模态框白色背景，所有内容都写在这个div里面  -->
+
+                <div class="btn-info modal-header">
+                    <!--  模态框标题  -->
+                    <h4>批量加入秒杀商品</h4>
+                    <!--  标题内容  -->
+                </div>
+
+                <div class="modal-body">
+                    <!--  模态框内容，我在此处添加一个表单 -->
+                    <div class="seckill_goods" th:each="goodsById : ${goodsByIds}">
+                        <input type="hidden" name="goodsId" th:value="${goodsById.id}" class="goodsId"/>
+                        <span th:text="${goodsById.goodsName}"></span>
+                        <input type="number"  name="seckillPrice" class="form-control well price" placeholder="秒杀价格" required="required"/>
+                        <input type="number"  name="stockCount" class="form-control well stock" placeholder="秒杀库存" required="required"/>
+                        <input autocomplete="off" type="text"  name="startDate" class="form-control well startTime"  required="required" placeholder="秒杀开始时间"/>
+                        <input autocomplete="off" type="text" name="endDate" class="form-control well endTime" required="required" placeholder="秒杀结束时间"/>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <!--  模态框底部样式，一般是提交或者确定按钮 -->
+                    <button type="submit" class="btn btn-info" onclick="addMiaoSha()">确定</button>
+                    <a type="button" class="btn btn-info" href="/seckillGoods/batchAdd">test</a>
+                    <a type="button" class="btn btn-default" href="/goods/goodsList">取消</a>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div> <!-- /.modal -->
+</form>
+</body>
+<!-- jquery-validator -->
+<script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+<!-- layer -->
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+<!-- md5.js -->
+<script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+<!-- common.js -->
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script>
+    function addMiaoSha() {
+        $("#myForm").validate({
+            submitHandler: function (form) {
+                doAddMiaoSha();
+            }
+        });
+
+    }
+
+    function doAddMiaoSha() {
+        // g_showLoading();
+        // $('#myForm').validatebox({required:true});
+        var goodsId = new Array();
+        var i=0;
+        $('.goodsId').each(function (){
+            goodsId[i] = $(this).val();
+            i=i+1;
+        });
+        var price = new Array();
+        var i=0;
+        $('.price').each(function (){
+            price[i] = $(this).val();
+            i=i+1;
+        });
+        var stock = new Array();
+        var i=0;
+        $('.stock').each(function (){
+            stock[i] = $(this).val();
+            i=i+1;
+        });
+        var startTime = new Array();
+        var i=0;
+        $('.startTime').each(function (){
+            startTime[i] = $(this).val();
+            i=i+1;
+        });
+        var endTime = new Array();
+        var i=0;
+        $('.endTime').each(function (){
+            endTime[i] = $(this).val();
+            i=i+1;
+        });
+        /*<![CDATA[*/
+        for (var i=0; i < goodsId.length; i++){
+        /*]]>*/
+            var goods = {
+                goodsId:goodsId[i],
+                seckillPrice: price[i],
+                stockCount: stock[i],
+                startDate: startTime[i],
+                endDate: endTime[i]
+            };
+            var goodsList = new Array();
+            goodsList.push(goods);
+            $.ajax({
+                type: "post",
+                url: "/seckillGoods/batchAdd",
+                data: JSON.stringify(goodsList),
+                contentType: 'application/json;charset=utf-8',
+                dataType: 'json',
+                success: function (){
+                    // var val = document.getElementsByClassName[0]("well").value;
+                    // if (val == ""){
+                    //     layer.msg("请输入必填内容");
+                    //     return false;
+                    // }
+                    window.location.href = "/goods/list";
+                },
+                error: function (data) {
+                    layer.msg("服务端错误");
+                }
+            });
+        }
+    };
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        // laydate.render({
+        //     elem: '.startTime'
+        //     ,type: 'datetime'
+        //     ,trigger: 'click'
+        // });
+
+        //日期
+        $('.startTime').each(function(){
+            laydate.render({
+                elem: this //使用this指向当前元素,不能使用class名, 否则只有第一个有效
+                ,type: 'datetime'
+                ,trigger: 'click'
+            });
+        });
+        $('.endTime').each(function(){
+            laydate.render({
+                elem: this //使用this指向当前元素,不能使用class名, 否则只有第一个有效
+                ,type: 'datetime'
+                ,trigger: 'click'
+            });
+        })
+    })
+
+</script>
+<!--<script th:inline="javascript">-->
+<!--    function test() {-->
+<!--        var single = [[${goodsByIds}]];-->
+<!--        console.log(single[0].id+"/"+single[0].goodsName+"/"+$(".seckill_goods .price").val());-->
+<!--    }-->
+
+<!--</script>-->
+</html>

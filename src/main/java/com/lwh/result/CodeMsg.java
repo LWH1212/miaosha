@@ -52,6 +52,8 @@ public class CodeMsg implements Serializable {
 
     public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500501, "不能重复秒杀");
 
+    public static CodeMsg REPEATE_ADDMIAOSHA = new CodeMsg(500501, "不能重复录入秒杀商品");
+
     public CodeMsg fillArgs(Object... args){
         int code = this.code;
         String message = String.format(this.msg,args);

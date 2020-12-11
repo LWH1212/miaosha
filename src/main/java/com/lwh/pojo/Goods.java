@@ -33,4 +33,6 @@ public class Goods implements Serializable {
 
     private String goodsDetail;
 
+    private Integer addStatus;
+
 }
